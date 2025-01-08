@@ -19,7 +19,6 @@ NOW, young sorcerer, to the **get_next_line Wizard Tester**! This enchanted test
    git clone https://github.com/HajerZam/42GNL_WizardTester.git
    cd 42GNL_WizardTester
    ```
-   ![Description of the image](https://github.com/HajerZam/42GNL_WizardTester/blob/main/example.png)
 2. Run the tests:
    ```bash
    make cast_test
@@ -29,6 +28,7 @@ NOW, young sorcerer, to the **get_next_line Wizard Tester**! This enchanted test
 
 4. Check the **test_results** folder to view the outcome of your get_next_line.
 
+![Description of the image](https://github.com/HajerZam/42GNL_WizardTester/blob/main/example.png)
 
 ## ✨ License:
 This project is under the **MIT License** – use, modify, and share freely, as long as you remember to credit the original wizard. THE WIZARD LIZARD 💫
