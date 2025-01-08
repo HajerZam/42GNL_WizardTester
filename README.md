@@ -22,8 +22,7 @@ NOW, young sorcerer, to the **get_next_line Wizard Tester**! This enchanted test
    
 2. Run the tests:
    ```bash
-   make
-   ./tester_program
+   make cast_test
    ```
 
 3. Cast your `get_next_line` spells! see the magic unfold! ৻(  •̀ ᗜ •́  ৻)
