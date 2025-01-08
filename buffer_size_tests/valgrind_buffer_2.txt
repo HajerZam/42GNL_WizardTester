@@ -1,0 +1,59 @@
+==27091== Memcheck, a memory error detector
+==27091== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==27091== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==27091== Command: ./gnl_tester
+==27091== 
+==27091== Conditional jump or move depends on uninitialised value(s)
+==27091==    at 0x109EE6: run_test_multiple_fds (in /mnt/c/Users/hajer/OneDrive/Desktop/Luiss42/C-Project-Get_Next_Line/Wizard tester/gnl_tester)
+==27091==    by 0x10A2AE: main (in /mnt/c/Users/hajer/OneDrive/Desktop/Luiss42/C-Project-Get_Next_Line/Wizard tester/gnl_tester)
+==27091== 
+==27091== Conditional jump or move depends on uninitialised value(s)
+==27091==    at 0x508E73B: __vfprintf_internal (vfprintf-internal.c:1517)
+==27091==    by 0x50A1499: __vsnprintf_internal (vsnprintf.c:114)
+==27091==    by 0x5079855: snprintf (snprintf.c:31)
+==27091==    by 0x109F6A: run_test_multiple_fds (in /mnt/c/Users/hajer/OneDrive/Desktop/Luiss42/C-Project-Get_Next_Line/Wizard tester/gnl_tester)
+==27091==    by 0x10A2AE: main (in /mnt/c/Users/hajer/OneDrive/Desktop/Luiss42/C-Project-Get_Next_Line/Wizard tester/gnl_tester)
+==27091== 
+==27091== Use of uninitialised value of size 8
+==27091==    at 0x4E0DFD2: strlen (vg_replace_strmem.c:502)
+==27091==    by 0x508FD30: __vfprintf_internal (vfprintf-internal.c:1517)
+==27091==    by 0x50A1499: __vsnprintf_internal (vsnprintf.c:114)
+==27091==    by 0x5079855: snprintf (snprintf.c:31)
+==27091==    by 0x109F6A: run_test_multiple_fds (in /mnt/c/Users/hajer/OneDrive/Desktop/Luiss42/C-Project-Get_Next_Line/Wizard tester/gnl_tester)
+==27091==    by 0x10A2AE: main (in /mnt/c/Users/hajer/OneDrive/Desktop/Luiss42/C-Project-Get_Next_Line/Wizard tester/gnl_tester)
+==27091== 
+==27091== Invalid read of size 1
+==27091==    at 0x4E0DFD2: strlen (vg_replace_strmem.c:502)
+==27091==    by 0x508FD30: __vfprintf_internal (vfprintf-internal.c:1517)
+==27091==    by 0x50A1499: __vsnprintf_internal (vsnprintf.c:114)
+==27091==    by 0x5079855: snprintf (snprintf.c:31)
+==27091==    by 0x109F6A: run_test_multiple_fds (in /mnt/c/Users/hajer/OneDrive/Desktop/Luiss42/C-Project-Get_Next_Line/Wizard tester/gnl_tester)
+==27091==    by 0x10A2AE: main (in /mnt/c/Users/hajer/OneDrive/Desktop/Luiss42/C-Project-Get_Next_Line/Wizard tester/gnl_tester)
+==27091==  Address 0x20656e694c0a0a21 is not stack'd, malloc'd or (recently) free'd
+==27091== 
+==27091== 
+==27091== Process terminating with default action of signal 11 (SIGSEGV)
+==27091==  General Protection Fault
+==27091==    at 0x4E0DFD2: strlen (vg_replace_strmem.c:502)
+==27091==    by 0x508FD30: __vfprintf_internal (vfprintf-internal.c:1517)
+==27091==    by 0x50A1499: __vsnprintf_internal (vsnprintf.c:114)
+==27091==    by 0x5079855: snprintf (snprintf.c:31)
+==27091==    by 0x109F6A: run_test_multiple_fds (in /mnt/c/Users/hajer/OneDrive/Desktop/Luiss42/C-Project-Get_Next_Line/Wizard tester/gnl_tester)
+==27091==    by 0x10A2AE: main (in /mnt/c/Users/hajer/OneDrive/Desktop/Luiss42/C-Project-Get_Next_Line/Wizard tester/gnl_tester)
+==27091== 
+==27091== HEAP SUMMARY:
+==27091==     in use at exit: 4,162 bytes in 3 blocks
+==27091==   total heap usage: 443 allocs, 440 frees, 56,943 bytes allocated
+==27091== 
+==27091== LEAK SUMMARY:
+==27091==    definitely lost: 0 bytes in 0 blocks
+==27091==    indirectly lost: 0 bytes in 0 blocks
+==27091==      possibly lost: 0 bytes in 0 blocks
+==27091==    still reachable: 4,162 bytes in 3 blocks
+==27091==         suppressed: 0 bytes in 0 blocks
+==27091== Reachable blocks (those to which a pointer was found) are not shown.
+==27091== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==27091== 
+==27091== Use --track-origins=yes to see where uninitialised values come from
+==27091== For lists of detected and suppressed errors, rerun with: -s
+==27091== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
