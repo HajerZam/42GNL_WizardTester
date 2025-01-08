@@ -16,8 +16,8 @@ NOW, young sorcerer, to the **get_next_line Wizard Tester**! This enchanted test
 ## 🌟 How to Use ∘ ∘ ∘ ( °ヮ° ) ?:
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your_username/get_next_line_wizard_tester.git
-   cd get_next_line_wizard_tester
+   git clone https://github.com/HajerZam/42GNL_WizardTester.git
+   cd 42GNL_WizardTester
    ```
    
 2. Run the tests:
