@@ -5,7 +5,7 @@
 # 42GNL_WizardTester
 A magical tester for 42's get_next_line project! 🧙‍♂️✨ tests BOTH mandatory and bonus features ᕙ(⇀‸↼‶)ᕗ, including multi-FD handling, edge cases, and memory leaks. and ofc it's wizard-themed test files and saves results to a folder.
 Clone, run, and ensure your GNL project! huehuehue🔮
-NOW, young sorcerer, to the **get_next_line Wizard Tester**! This enchanted tester will help you test your 42 **get_next_line** project with ease. still I higly encourage you try other testers as well and test on your own!
+NOW, young sorcerer, to the **get_next_line Wizard Tester**! This enchanted tester will help you test your 42 **get_next_line** project with ease. still I highly encourage you try other testers as well and test on your own!
 
 ## ✨ Features are!:
 - **Mandatory Tests**: All the usual suspects, from single lines to multi-line incantations.
