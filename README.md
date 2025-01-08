@@ -19,7 +19,7 @@ NOW, young sorcerer, to the **get_next_line Wizard Tester**! This enchanted test
    git clone https://github.com/HajerZam/42GNL_WizardTester.git
    cd 42GNL_WizardTester
    ```
-   
+   ![Description of the image](https://github.com/HajerZam/42GNL_WizardTester/blob/main/example.png)
 2. Run the tests:
    ```bash
    make cast_test
