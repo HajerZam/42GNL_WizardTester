@@ -21,6 +21,17 @@ GREEN="\033[0;32m"
 RED="\033[0;31m"
 RESET="\033[0m"
 
+# Norminette
+echo "Checking Norminette compliance ଘ( ･ω･)_/ﾟ･:*:･｡☆..."
+NORMINETTE_RESULTS="norminette_results.txt"
+norminette > "$NORMINETTE_RESULTS"
+
+if grep -q "Error" "$NORMINETTE_RESULTS"; then
+    echo -e "${RED}Norminette check failed! (ง ͠ಥ_ಥ)ง Check $NORMINETTE_RESULTS for details.${RESET}"
+else
+    echo -e "${GREEN}Norminette check passed! (๑>؂•̀๑)${RESET}"
+fi
+
 BUFFER_SIZES=(1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192)
 
 for BUFFER_SIZE in "${BUFFER_SIZES[@]}"
