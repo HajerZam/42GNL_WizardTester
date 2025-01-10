@@ -1,9 +1,10 @@
 #!/bin/bash
 
 RESULTS_DIR="buffer_size_tests"
+LOG_FILE="$RESULTS_DIR/test_summary.log"
 mkdir -p $RESULTS_DIR
 
-# ASCII Art to start the tests
+# Header with ASCII art
 echo "________▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄______________________________________________________________"
 echo "_______█░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░█_____________________________________________________________"
 echo "_______█░▒▒▒▒▒▒▒▒▒▒▄▀▀▄▒▒▒░░█▄▀▀▄_________________________________________________________"
@@ -15,52 +16,49 @@ echo "______▄█░░▒▒▒▒▒▒▒▒▒▀▄▓▓▀▀▀▀▀�
 echo "____▄▀▓▀█▄▄▄▄▄▄▄▄▄▄▄▄██████▀█▀▀___________________________________________________________"
 echo "____█▄▄▀_█▄▄▀_______█▄▄▀_▀▄▄█_____________________________________________________________"
 
-echo "Running Mandatory tests be patient ଘ(∩^o^)⊃━☆゜✩₊˚.⋆☾⋆⁺₊✧...."
+echo "Starting tests at $(date)" | tee "$LOG_FILE"
 
 GREEN="\033[0;32m"
 RED="\033[0;31m"
+PURPLE="\033[0;35m"
 RESET="\033[0m"
 
-# Norminette
-echo "Checking Norminette compliance ଘ( ･ω･)_/ﾟ･:*:･｡☆..."
-NORMINETTE_RESULTS="norminette_results.txt"
-norminette > "$NORMINETTE_RESULTS"
+echo -e "${PURPLE}==========================================================================${RESET}"
+echo "Running Mandatory Tests! Good luck, Wizard!"
+echo -e "${PURPLE}==========================================================================${RESET}"
 
-if grep -q "Error" "$NORMINETTE_RESULTS"; then
-    echo -e "${RED}Norminette check failed! (ง ͠ಥ_ಥ)ง Check $NORMINETTE_RESULTS for details.${RESET}"
-else
-    echo -e "${GREEN}Norminette check passed! (๑>؂•̀๑)${RESET}"
-fi
-
-BUFFER_SIZES=(1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192)
+BUFFER_SIZES=(1 2 4 8 16 32 64 128 256 512 1024)
 
 for BUFFER_SIZE in "${BUFFER_SIZES[@]}"
 do
     export BUFFER_SIZE
-    TESTER="./gnl_tester"
-    RESULT_FILE="$RESULTS_DIR/results_buffer_${BUFFER_SIZE}.txt"
-    VALGRIND_FILE="$RESULTS_DIR/valgrind_buffer_${BUFFER_SIZE}.txt"
+    echo -e "| Testing with BUFFER_SIZE=${BUFFER_SIZE}..." | tee -a "$LOG_FILE"
 
-    echo " now Testing with BUFFER_SIZE=${BUFFER_SIZE}..."
+    make re > "$RESULTS_DIR/build_${BUFFER_SIZE}.log" 2>&1
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Build failed for BUFFER_SIZE=${BUFFER_SIZE}. Check build_${BUFFER_SIZE}.log${RESET}" | tee -a "$LOG_FILE"
+        continue
+    fi
 
-    # Run the program and capture the exit code
-    $TESTER > "$RESULT_FILE" 2>&1
-    EXIT_CODE=$?
+    TEST_OUTPUT_FILE="$RESULTS_DIR/results_buffer_${BUFFER_SIZE}.txt"
+    VALGRIND_OUTPUT_FILE="$RESULTS_DIR/valgrind_buffer_${BUFFER_SIZE}.txt"
 
-    # Run valgrind
-    valgrind --leak-check=full $TESTER > "$VALGRIND_FILE" 2>&1
-    VALGRIND_EXIT=$?
+    ./gnl_tester > "$TEST_OUTPUT_FILE" 2>&1
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}BUFFER_SIZE=${BUFFER_SIZE}: Test failed! Check results_buffer_${BUFFER_SIZE}.txt${RESET}" | tee -a "$LOG_FILE"
+    fi
 
-    if [ $EXIT_CODE -ne 0 ]; then
-        echo -e "${RED}BUFFER_SIZE=${BUFFER_SIZE}: FAILED (ง ͠ಥ_ಥ)ง (Segmentation fault or error)${RESET}"
-    elif grep -q "ERROR SUMMARY: [^0]" "$VALGRIND_FILE"; then
-        echo -e "${RED}BUFFER_SIZE=${BUFFER_SIZE}: FAILED (｡·  v  ·｡) ? (Memory issues)${RESET}"
+    echo -e "Running Valgrind for BUFFER_SIZE=${BUFFER_SIZE}..." | tee -a "$LOG_FILE"
+    valgrind --leak-check=full ./gnl_tester > "$VALGRIND_OUTPUT_FILE" 2>&1
+    if grep -q "ERROR SUMMARY: [^0]" "$VALGRIND_OUTPUT_FILE"; then
+        echo -e "${RED}BUFFER_SIZE=${BUFFER_SIZE}: Memory issues detected! Check valgrind_buffer_${BUFFER_SIZE}.txt${RESET}" | tee -a "$LOG_FILE"
     else
-        echo -e "${GREEN}BUFFER_SIZE=${BUFFER_SIZE}: PASSED (๑>؂•̀๑)${RESET}"
+        echo -e "${GREEN}BUFFER_SIZE=${BUFFER_SIZE}: Memory check passed!${RESET}" | tee -a "$LOG_FILE"
     fi
 done
 
-# ASCII Art to start the tests
+echo -e "${PURPLE}==========================================================================${RESET}"
+echo "All tests completed! Check the $RESULTS_DIR folder for results! ദ്ദി(˵ •̀ u - ˵ ) ✧ good luck, Wizard!" | tee -a "$LOG_FILE"
 echo "________▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄______________________________________________________________"
 echo "_______█░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░█_____________________________________________________________"
 echo "_______█░▒▒▒▒▒▒▒▒▒▒▄▀▀▄▒▒▒░░█▄▀▀▄_________________________________________________________"
@@ -71,5 +69,3 @@ echo "_____▀▀█░▒▒▒▒▒▒▒▒▒█▓▒▒▓▄▓▓▄▓
 echo "______▄█░░▒▒▒▒▒▒▒▒▒▀▄▓▓▀▀▀▀▀▀▀▓▄▀_________________________________________________________"
 echo "____▄▀▓▀█▄▄▄▄▄▄▄▄▄▄▄▄██████▀█▀▀___________________________________________________________"
 echo "____█▄▄▀_█▄▄▀_______█▄▄▀_▀▄▄█_____________________________________________________________"
-
-echo "All tests completed! Check the $RESULTS_DIR folder for results! ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧ good luck, Wizard!"

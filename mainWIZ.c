@@ -28,76 +28,94 @@ void save_test_result(const char *test_name, const char *result) {
     fclose(file);
 }
 
-void run_test(const char *test_name, const char *file_name, const char *expected_output) {
+void run_test(const char *test_name, const char *file_name, const char *expected_file) {
     int fd = open(file_name, O_RDONLY);
-    if (fd == -1) {
-        perror("Failed to open test file");
-        save_test_result(test_name, "FAILED: File could not be opened\n");
+    FILE *expected = fopen(expected_file, "r");
+
+    if (fd == -1 || !expected) {
+        perror("Failed to open test or expected output file");
         printf("Test %s: FAILED\n", test_name);
         return;
     }
 
-    char *line = NULL;
-    size_t line_num = 0;
+    char *line;
+    char expected_line[1024];
+    int line_num = 0;
     int passed = 1;
-    char results[2048] = {0};
+
+    char result_path[256];
+    snprintf(result_path, sizeof(result_path), "%s/%s_result.txt", TEST_RESULTS_DIR, test_name);
+    FILE *result_file = fopen(result_path, "w");
+    if (!result_file) {
+        perror("Failed to create result file");
+        return;
+    }
+
+    fprintf(result_file, "Results for %s:\n", test_name);
 
     while ((line = get_next_line(fd)) != NULL) {
-        ++line_num;
-        snprintf(results + strlen(results), sizeof(results) - strlen(results),
-                 "Line %zu: Got: %s", line_num, line);
-
-        if (strcmp(line, expected_output) != 0) {
-            snprintf(results + strlen(results), sizeof(results) - strlen(results),
-                     " --> Mismatch! Expected: %s\n", expected_output);
+        line_num++;
+        if (!fgets(expected_line, sizeof(expected_line), expected)) {
+            fprintf(result_file, "Line %d: Unexpected output: %s\n", line_num, line);
             passed = 0;
+        } else if (strcmp(line, expected_line) != 0) {
+            fprintf(result_file, "Line %d: Expected: %sGot: %s\n", line_num, expected_line, line);
+            passed = 0;
+        } else {
+            fprintf(result_file, "Line %d: PASSED\n", line_num);
         }
         free(line);
     }
 
+    if (fgets(expected_line, sizeof(expected_line), expected)) {
+        fprintf(result_file, "Extra line in expected file: %s\n", expected_line);
+        passed = 0;
+    }
+
+    fclose(result_file);
+    fclose(expected);
     close(fd);
 
-    if (passed) {
-        save_test_result(test_name, "PASSED\n");
-        printf("Test %s: PASSED\n", test_name);
-    } else {
-        save_test_result(test_name, results);
-        printf("Test %s: FAILED\n", test_name);
-    }
+    printf("Test %s: %s\n", test_name, passed ? "PASSED" : "FAILED");
 }
 
 
-void run_test_multiple_fds(const char *test_name, const char *file1, const char *file2)
-{
+void run_test_multiple_fds(const char *test_name, const char *file1, const char *file2) {
     int fd1 = open(file1, O_RDONLY);
     int fd2 = open(file2, O_RDONLY);
 
     if (fd1 == -1 || fd2 == -1) {
         perror("Failed to open test files");
-        save_test_result(test_name, "FAILED: One or more files could not be opened\n");
-        printf("Test %s: FAILED\n", test_name);
         return;
     }
 
-    char results[1024] = {0};
     char *line1, *line2;
     int read_count = 0;
 
+    char result_path[256];
+    snprintf(result_path, sizeof(result_path), "%s/%s_result.txt", TEST_RESULTS_DIR, test_name);
+    FILE *result_file = fopen(result_path, "w");
+    if (!result_file) {
+        perror("Failed to create result file");
+        return;
+    }
+
+    fprintf(result_file, "Results for %s:\n", test_name);
+
     while ((line1 = get_next_line(fd1)) || (line2 = get_next_line(fd2))) {
-        ++read_count;
-        snprintf(results + strlen(results), sizeof(results) - strlen(results),
-                 "Read %d:\n  File 1: %s\n  File 2: %s\n",
-                 read_count, line1 ? line1 : "EOF", line2 ? line2 : "EOF");
+        read_count++;
+        fprintf(result_file, "Read %d:\n  File 1: %s\n  File 2: %s\n",
+                read_count, line1 ? line1 : "EOF", line2 ? line2 : "EOF");
 
         free(line1);
         free(line2);
     }
 
+    fclose(result_file);
     close(fd1);
     close(fd2);
 
-    save_test_result(test_name, results);
-    printf("Test %s: PASSED ദ്ദി ˉ͈̀꒳ˉ͈́ )✧\n", test_name);
+    printf("Test %s: Results saved to %s\n", test_name, result_path);
 }
 
 
